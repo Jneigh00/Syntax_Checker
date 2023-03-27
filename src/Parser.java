@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Parser
 {
@@ -79,8 +78,144 @@ public class Parser
         if(match == false)                          // if token does not match
             throw new Exception("token mismatch");  // throw exception (indicating parsing error in this assignment)
 
+        if(_token.type == FUNC){
+            lexeme = "func";
+        }
+        if(_token.type == INT){
+            lexeme = "int";
+        }
+        if(_token.type == INT_LIT){
+            lexeme = _token.attr.sval;
+        }
+        if(_token.type == BOOL_LIT){
+            if(_token.attr.sval.equals("true")){
+                lexeme = "true";
+            }
+            else{
+                lexeme = "false";
+            }
+        }
+        if(_token.type == PTR){
+            lexeme = "ptr";
+        }
+        if(_token.type == BEGIN){
+            lexeme = "{";
+        }
+        if(_token.type == END){
+            lexeme = "}";
+        }
+        if(_token.type == LPAREN){
+            lexeme = "(";
+        }
+        if(_token.type == RPAREN){
+            lexeme = ")";
+        }
+        if(_token.type == ASSIGN){
+            lexeme = "<-";
+        }
+        if(_token.type == EXPROP){
+            if(_token.attr.sval.equals("+")){
+                lexeme = "+";
+            }
+            if(_token.attr.sval.equals("-")){
+                lexeme = "-";
+            }
+            if(_token.attr.sval.equals("or")){
+                lexeme = "or";
+            }
+        }
+        if(_token.type == TERMOP){
+            if(_token.attr.sval.equals("*")){
+                lexeme = "*";
+            }
+            if(_token.attr.sval.equals("/")){
+                lexeme = "/";
+            }
+            if(_token.attr.sval.equals("and")){
+                lexeme = "and";
+            }
+        }
+        if(_token.type == SEMI){
+            lexeme = ";";
+        }
+        if(_token.type == IDENT){
+            lexeme = _token.attr.sval;
+        }
+        if(_token.type == FUNCRET){
+            lexeme = "->";
+        }
+        if(_token.type == LBRACKET){
+            lexeme = "[";
+        }
+        if(_token.type == RBRACKET){
+            lexeme = "]";
+        }
+        if(_token.type == RBRACKET){
+            lexeme = "]";
+        }
+        if(_token.type == RELOP){
+            if(_token.attr.sval.equals("<")){
+                lexeme = "<";
+            }
+            if(_token.attr.sval.equals(">")){
+                lexeme = ">";
+            }
+            if(_token.attr.sval.equals("<=")){
+                lexeme = "<=";
+            }
+            if(_token.attr.sval.equals(">=")){
+                lexeme = ">=";
+            }
+            if(_token.attr.sval.equals("=")){
+                lexeme = "=";
+            }
+            if(_token.attr.sval.equals("!=")){
+                lexeme = "!=";
+            }
+        }
+        if(_token.type == COMMA){
+            lexeme = ",";
+        }
+        if(_token.type == DOT){
+            lexeme = ".";
+        }
+        if(_token.type == IF){
+            lexeme = "if";
+        }
+        if(_token.type == NEW){
+            lexeme = "new";
+        }
+        if(_token.type == VAR){
+            lexeme = "var";
+        }
+        if(_token.type == CALL){
+            lexeme = "call";
+        }
+        if(_token.type == ELSE){
+            lexeme = "else";
+        }
+        if(_token.type == BOOL){
+            lexeme = "bool";
+        }
+        if(_token.type == WHILE){
+            lexeme = "while";
+        }
+        if(_token.type == PRINT){
+            lexeme = "print";
+        }
+        if(_token.type == RETURN){
+            lexeme = "return";
+        }
+        if(_token.type == ELEMOF){
+            lexeme = "elemof";
+        }
+        if(_token.type == SIZEOF){
+            lexeme = "sizeof";
+        }
+
         if(_token.type != ENDMARKER)    // if token is not endmarker,
             Advance();                  // make token point next token in input by calling Advance()
+
 
         return lexeme;
     }
@@ -117,7 +252,8 @@ public class Parser
         {
             case FUNC:
                 List<ParseTree.FuncDecl> funcsTest = decl_list();
-                return new ParseTree.Program(funcsTest);
+                ParseTree.Program v2 = new ParseTree.Program(funcsTest);
+                return v2;
             case ENDMARKER:
                 List<ParseTree.FuncDecl> funcs = decl_list();
                 String v1 = Match(ENDMARKER);
@@ -335,7 +471,7 @@ public class Parser
         switch (_token.type){
             case IDENT:
             {
-
+                return new ParseTree.TypeSpec_Value();
             }
             case LBRACKET:
             {
@@ -361,7 +497,20 @@ public class Parser
     }
 
     public ParseTree.Term_ termP() throws  Exception{
-
+        switch (_token.type){
+            case RBRACKET:
+            case SEMI:
+            case RELOP:
+            case EXPROP:
+            case COMMA:
+            case RPAREN:
+                return null;
+            case TERMOP:
+                String v1 = Match(TERMOP);
+                ParseTree.Factor v2 = factor();
+                ParseTree.Term_ v3 = termP();
+                return new ParseTree.Term_(v1, v2, v3);
+        }
         return null;
     }
 
@@ -433,13 +582,13 @@ public class Parser
         switch (_token.type){
             case RPAREN:
             {
-
+                return new ArrayList<ParseTree.Param>();
             }
             case COMMA:
                 String v1 = Match(COMMA);
                 ParseTree.Param v2 = param();
                 List<ParseTree.Param> v3 = param_listP();
-                v3.add(v2);
+                v3.add(0,v2);
                 return v3;
         }
         return null;
@@ -468,7 +617,7 @@ public class Parser
         return null;
     }
 
-    public ParseTree.LocalDecl local_decl(){
+    public ParseTree.LocalDecl local_decl() throws Exception {
         switch (_token.type){
             case IDENT:
             case BEGIN:
@@ -476,6 +625,11 @@ public class Parser
             case END:
             case IF:
             case VAR:
+                String v1 = Match(VAR);
+                ParseTree.TypeSpec v2 = type_spec();
+                String v3 = Match(IDENT);
+                String v4 = Match(SEMI);
+                return new ParseTree.LocalDecl(v3, v2);
             case PRINT:
             case RETURN:
         }
@@ -526,6 +680,7 @@ public class Parser
                 return new ParseTree.FactorParen(v14);
             case INT_LIT:
                 String v16 = Match(INT_LIT);
+                int v50 = Integer.parseInt(v16);
                 return new ParseTree.FactorIntLit(Integer.parseInt(v16));
             case NEW:
                 String v17 = Match(NEW);
@@ -546,11 +701,11 @@ public class Parser
         switch (_token.type){
             case RPAREN:
             {
-
+                return null;
             }
             case COMMA:
             {
-
+                return null;
             }
             case EXPROP:
                 String v1 = Match(EXPROP);
@@ -562,11 +717,11 @@ public class Parser
                 return exprP();
             case SEMI:
             {
-
+                return null;
             }
             case RBRACKET:
             {
-
+                return null;
             }
         }
         return null;
@@ -626,7 +781,7 @@ public class Parser
                 return arg_list();
             case RPAREN:
             {
-
+                return new ArrayList<ParseTree.Arg>();
             }
 
         }
@@ -638,7 +793,7 @@ public class Parser
         switch (_token.type){
             case RPAREN:
             {
-
+                return new ArrayList<ParseTree.Arg>();
             }
             case COMMA:
                 String v1 = Match(COMMA);

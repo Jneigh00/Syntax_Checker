@@ -8,7 +8,7 @@ public class Program
         //+"}\n"
         //);
         //
-        //  args = new String[] { "proj4-minc\\samples\\succ_01.minc" };
+        args = new String[] { "//Users/justinneigh//Downloads//Homework6_470//src//tests//succ_01.minc" };
 
         if(args.length <= 0)
             return;
