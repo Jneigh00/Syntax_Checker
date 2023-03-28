@@ -74,9 +74,104 @@ public class Parser
     {
         boolean match = (token_type == _token.type);
         String lexeme = "";
+        String errorPrinter = "";
+
+        if(token_type == 11){
+            errorPrinter = "int";
+        }
+        if(token_type == 12){
+            errorPrinter = "ptr";
+        }
+        if(token_type == 13){
+            errorPrinter = "{";
+        }
+        if(token_type == 14){
+            errorPrinter = "}";
+        }
+        if(token_type == 15){
+            errorPrinter = "(";
+        }
+        if(token_type == 16){
+            errorPrinter = ")";
+        }
+        if(token_type == 17){
+            errorPrinter = "<-";
+        }
+        if(token_type == 18){
+            errorPrinter = "exprop";
+        }
+        if(token_type == 19){
+            errorPrinter = "termop";
+        }
+        if(token_type == 20){
+            errorPrinter = ";";
+        }
+        if(token_type == 21){
+            errorPrinter = "number";
+        }
+        if(token_type == 22){
+            errorPrinter = "an identifier";
+        }
+        if(token_type == 23){
+            errorPrinter = "->";
+        }
+        if(token_type == 24){
+            errorPrinter = "func";
+        }
+        if(token_type == 25){
+            errorPrinter = "[";
+        }
+        if(token_type == 26){
+            errorPrinter = "]";
+        }
+        if(token_type == 27){
+            errorPrinter = "relop";
+        }
+        if(token_type == 28){
+            errorPrinter = ",";
+        }
+        if(token_type == 29){
+            errorPrinter = ".";
+        }
+        if(token_type == 30){
+            errorPrinter = "if";
+        }
+        if(token_type == 31){
+            errorPrinter = "new";
+        }
+        if(token_type == 32){
+            errorPrinter = "var";
+        }
+        if(token_type == 33){
+            errorPrinter = "call";
+        }
+        if(token_type == 34){
+            errorPrinter = "else";
+        }
+        if(token_type == 35){
+            errorPrinter = "true or false";
+        }
+        if(token_type == 36){
+            errorPrinter = "bool";
+        }
+        if(token_type == 37){
+            errorPrinter = "while";
+        }
+        if(token_type == 38){
+            errorPrinter = "print";
+        }
+        if(token_type == 39){
+            errorPrinter = "return";
+        }
+        if(token_type == 40){
+            errorPrinter = "elemof";
+        }
+        if(token_type == 41){
+            errorPrinter = "sizeof";
+        }
 
         if(match == false)                          // if token does not match
-            throw new Exception("token mismatch");  // throw exception (indicating parsing error in this assignment)
+            throw new Exception( "\"" + errorPrinter + "\"" +" is expected instead of \"" + _token.attr.sval + "\" at " + _lexer.lineno + ":" + _lexer.column);  // throw exception (indicating parsing error in this assignment)
 
         if(_token.type == FUNC){
             lexeme = "func";
@@ -259,7 +354,7 @@ public class Parser
                 String v1 = Match(ENDMARKER);
                 return new ParseTree.Program(funcs);
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
 
@@ -273,7 +368,7 @@ public class Parser
                 String v1 = Match(ENDMARKER);
                 return decl_list_();
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
     public List<ParseTree.FuncDecl> decl_list_() throws Exception
     {
@@ -288,7 +383,7 @@ public class Parser
                 String v3 = Match(ENDMARKER);
                 return new ArrayList<ParseTree.FuncDecl>();
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
     public ParseTree.FuncDecl fun_decl() throws Exception
     {
@@ -308,7 +403,7 @@ public class Parser
                 String                    v11 = Match(END)    ;
                 return new ParseTree.FuncDecl(v02,v07,v04,v09,v10);
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
     public ParseTree.PrimType prim_type() throws Exception
     {
@@ -325,7 +420,7 @@ public class Parser
                 return new ParseTree.PrimTypeBool();
             }
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
     public List<ParseTree.Param> params() throws Exception
     {
@@ -344,7 +439,7 @@ public class Parser
                 return v2;
             }
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
     public List<ParseTree.LocalDecl> local_decls() throws Exception
     {
@@ -367,7 +462,7 @@ public class Parser
             case RETURN:
                 return local_decls_();
         }
-        throw new Exception("error");
+        throw new Exception("Incorrect declaration of a local variable at " + _lexer.lineno + ":" + _lexer.column);
     }
     public List<ParseTree.LocalDecl> local_decls_() throws Exception
     {
@@ -393,7 +488,7 @@ public class Parser
                 v2.add(0, v1);
                 return v2;
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
     public List<ParseTree.Stmt> stmt_list() throws Exception
     {
@@ -409,7 +504,7 @@ public class Parser
                 return stmt_list_();
 
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
     public List<ParseTree.Stmt> stmt_list_() throws Exception
     {
@@ -448,7 +543,7 @@ public class Parser
                 v12.add(0, v11);
                 return v12;
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.StmtWhile while_stmt() throws Exception{
@@ -463,7 +558,7 @@ public class Parser
                 ParseTree.Stmt v5 = stmt();
                 return new ParseTree.StmtWhile(v3, v5);
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.TypeSpec_ type_specP() throws Exception{
@@ -477,23 +572,23 @@ public class Parser
             {
                 String v1 = Match(LBRACKET);
                 String v2 = Match(RBRACKET);
+                return new ParseTree.TypeSpec_Array();
             }
         }
 
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.TypeSpec type_spec() throws  Exception{
 
         switch (_token.type){
             case INT:
-            case BOOL: {
+            case BOOL:
                 ParseTree.PrimType v1 = prim_type();
                 ParseTree.TypeSpec_ v2 = type_specP();
                 return new ParseTree.TypeSpec(v1, v2);
-            }
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.Term_ termP() throws  Exception{
@@ -511,7 +606,7 @@ public class Parser
                 ParseTree.Term_ v3 = termP();
                 return new ParseTree.Term_(v1, v2, v3);
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.Term term() throws  Exception{
@@ -529,7 +624,7 @@ public class Parser
                 return new ParseTree.Term(v1, v2);
             }
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.Stmt stmt() throws  Exception{
@@ -553,7 +648,7 @@ public class Parser
                 ParseTree.StmtReturn v6 = return_stmt();
                 return v6;
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.StmtReturn return_stmt() throws  Exception{
@@ -564,7 +659,7 @@ public class Parser
                 String v3 = Match(SEMI);
                 return new ParseTree.StmtReturn(v2);
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.StmtPrint print_stmt() throws Exception{
@@ -575,7 +670,7 @@ public class Parser
                 String v3 = Match(SEMI);
                 return new ParseTree.StmtPrint(v2);
         }
-        throw new Exception("error");
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public  List<ParseTree.Param> param_listP() throws Exception{
@@ -591,7 +686,7 @@ public class Parser
                 v3.add(0,v2);
                 return v3;
         }
-        return null;
+        throw new Exception("Incorrect parameter format of a function at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public  List<ParseTree.Param> param_list() throws Exception{
@@ -603,18 +698,20 @@ public class Parser
                 v2.add(0, v1);
                 return v2;
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.Param param() throws Exception{
         switch (_token.type){
+            case BOOL:
             case INT:
                 ParseTree.TypeSpec v1 = type_spec();
                 String v2 = Match(IDENT);
                 return new ParseTree.Param(v2, v1);
+
         }
 
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.LocalDecl local_decl() throws Exception {
@@ -633,7 +730,7 @@ public class Parser
             case PRINT:
             case RETURN:
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.StmtIf if_stmt() throws Exception{
@@ -648,7 +745,7 @@ public class Parser
                 ParseTree.Stmt v7 = stmt();
                 return new ParseTree.StmtIf(v3, v5, v7);
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.Factor factor() throws Exception{
@@ -694,37 +791,29 @@ public class Parser
                 String v23 = Match(IDENT);
                 return new ParseTree.FactorSizeof(v23);
         }
-        return null;
+        throw new Exception("Incorrect expression at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.Expr_ exprP() throws Exception{
         switch (_token.type){
             case RPAREN:
-            {
-                return null;
-            }
-            case COMMA:
-            {
+            case RBRACKET:
+            case SEMI:
+            case COMMA: {
                 return null;
             }
             case EXPROP:
                 String v1 = Match(EXPROP);
                 ParseTree.Term v2 = term();
-                return exprP();
+                ParseTree.Expr_ vTest = exprP();
+                return new ParseTree.Expr_(v1, v2, vTest);
             case RELOP:
                 String v3 = Match(RELOP);
                 ParseTree.Term v4 = term();
-                return exprP();
-            case SEMI:
-            {
-                return null;
-            }
-            case RBRACKET:
-            {
-                return null;
-            }
+                ParseTree.Expr_ vTest2 = exprP();
+                return new ParseTree.Expr_(v3, v4, vTest2);
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.Expr expr() throws Exception {
@@ -741,7 +830,7 @@ public class Parser
                 ParseTree.Expr_ v2 = exprP();
                 return new ParseTree.Expr(v1, v2);
         }
-        return null;
+        throw new Exception("Incorrect expression at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.StmtCompound compound_stmt() throws Exception{
@@ -753,7 +842,7 @@ public class Parser
                 String v4 = Match(END);
                 return new ParseTree.StmtCompound(v2, v3);
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public ParseTree.StmtAssign assign_stmt() throws Exception {
@@ -765,7 +854,7 @@ public class Parser
                 String v4 = Match(SEMI);
                 return new ParseTree.StmtAssign(v1, v3);
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public List<ParseTree.Arg> args() throws Exception {
@@ -786,7 +875,7 @@ public class Parser
 
         }
 
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public List<ParseTree.Arg> args_listP() throws Exception {
@@ -799,9 +888,11 @@ public class Parser
                 String v1 = Match(COMMA);
                 ParseTree.Expr v2 = expr();
                 List<ParseTree.Arg> v3 = args_listP();
+                ParseTree.Arg v2Arg = new ParseTree.Arg(v2);
+                v3.add(0, v2Arg);
                 return v3;
         }
-        return null;
+        throw new Exception("Incorrect argument format at " + _lexer.lineno + ":" + _lexer.column);
     }
 
     public List<ParseTree.Arg> arg_list() throws Exception{
@@ -819,7 +910,7 @@ public class Parser
                 v2.add(0, new ParseTree.Arg(v1));
                 return v2;
         }
-        return null;
+        throw new Exception("There is an error at " + _lexer.lineno + ":" + _lexer.column);
     }
 
 
